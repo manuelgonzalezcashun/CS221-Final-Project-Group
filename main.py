@@ -9,7 +9,7 @@ class Main(user_input):
     self.user_input = user_input
     
   def print_input(self):
-    print(self.user_input)
+    print("Result:",self.user_input)
     
     
 def main():
