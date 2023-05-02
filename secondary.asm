@@ -11,22 +11,15 @@ delimiter:
 append_to_array: #APPEND RANDOM VALUE TO ARRAY OF TYPE PASSED (for either user or computer)
     lw $t1, 0($sp) #value to append
     lw $t2, 4($sp) #address of where to append 
-    main: #append t1 to the address of t2
-
-
-
-
-
+    
+    sw $t1, 0($t2) #save the new value to the array of the passed address
     jr $ra
-
-
-
 
 
 
 .globl get_totals
 get_totals: 
-
+    jr $ra
 
 
 
