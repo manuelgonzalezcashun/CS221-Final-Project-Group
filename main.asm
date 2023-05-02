@@ -87,3 +87,6 @@ main:
     syscall
 
 
+
+
+#Eventually add a way to check for invalid inputs and print out a generic output, making the user_restart the entire program #
