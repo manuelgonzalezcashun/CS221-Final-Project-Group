@@ -3,62 +3,35 @@
 
 
 .data
-input: .asciiz "Enter an integer: "
-output: .asciiz "Your Output is: "
-
-
+introduction_text: .asciiz "Welcome to 21, the modified version of Black Jack!\n{Please read rules.txt for game rules!}"
+lower_bound: .word 1 #minimum value of a card 
+upper_bound: .word 13 #maximum value of card
+player_array: .space 100
+computer_array: .space 100
+player_card_read: .asciiz "The player"
 
 
 .text 
-
 .globl main
 main:
-	#print the input prompt
+	#print the introdcution
 	li $v0, 4
-	la $a0, input
+	la $a0, introduction_text
 	syscall 
-	
-	#take in the first input 
-	li $v0, 5
-	syscall
-	
-	move $t1, $v0
-	
-	#print the input prompt again
-	li $v0, 4
-	la $a0, input
-	syscall 
-	
-	#take in the second input 
-	li $v0, 5
-	syscall
-	
-	move $t2, $v0
-	
-	
 
-	#Call random_int function 
-	addiu $sp, $sp, -16 #allocate stack space 
-	sw $t1, 0($sp) #pass in arg 1
-	sw $t2, 4($sp) #pass in arg 2
-	sw $ra, 8($sp) #save $ra
-	jal random_int #call & link the random_int function
-	lw $a0, 12($sp)#get return value into $ra
-	lw $ra, 8($sp) #restore $ra
-	addiu $sp, $sp, 16 #reallocate space on the stack
-	move $t0, $a0 #$t0, hold the random value between the two random values
-	
-	li $v0, 4
-	la $a0, output
-	syscall
-	
-	
-	
-    li $v0, 1 #random 
-    move $a0, $t0
-    syscall
+	#CREATE GAME LOGIC
 
 
+	#CREATE PLAYER HAND
+
+
+
+
+	#CREATE COMPUTER HAND
+
+
+
+	done:
 	#TERMINATE THE PRORGAM
     li $v0, 10
     syscall
