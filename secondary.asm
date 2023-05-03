@@ -34,6 +34,7 @@ random_int: #GENERATE RANDOM VALUE for
     move $a0, $t1
     move $a1, $t2
     syscall
+    addi $a0, $a0, 1 #Add in 1 for lowest value in case it rolls a '0'. Lower bound is not used in syscall 42
     sw $a0, 12($sp)#where the return value will be stored in
     jr $ra
 
