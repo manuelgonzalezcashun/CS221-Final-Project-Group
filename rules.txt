@@ -1,15 +1,14 @@
 
 
 GAME RULES
-    ---
-    ---
-    ---
-    ---
-    ---
-
+    --- Player draws a value between 1-11
+    --- Player draws until they reaches 21 or a value closest to 21
 
     WIN STATES:
-        ---
-
+        - Player wins if they get 21
+	  - Oppenent gets a score over 21
+	  - Player gets a score closest to 21, without going over 21
     LOSS STATES:
-        ---
+        - Player goes over 21
+	  - Oppenent gets 21
+	  - Oppenent gets a score closest to 21, without going over 21
