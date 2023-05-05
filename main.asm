@@ -15,6 +15,9 @@ computer_rolled: .asciiz "\nComputer drew: "
 player_card_read: .asciiz "\nThe player's values: "
 computer_card_read: .asciiz "\nThe computer's values: "
 
+player_total_output: .asciiz "\nPlayers total: "
+computer_total_output: .asciiz "\nComputers total: "
+
 exit_output: .asciiz "\nThanks for playing our game!"
 
 
@@ -127,11 +130,11 @@ main:
 		sw $ra, 4($sp)
 		jal display_array
 		lw $ra, 4($sp)
-		addiu $sp, $sp, -16
+		addiu $sp, $sp, 16
 		
 		#DISPLAY THE ENTIRE ARRAY (computer)
 		li $v0, 4
-		la $a0, player_card_read
+		la $a0, computer_card_read
 		syscall
 		#call displayarray
 		addiu $sp, $sp, -16
@@ -139,9 +142,57 @@ main:
 		sw $ra, 4($sp)
 		jal display_array
 		lw $ra, 4($sp)
+		addiu $sp, $sp, 16
+		
+		#get totals for player
 		addiu $sp, $sp, -16
+		sw $s1, 0($sp)
+		sw $ra, 4($sp)
+		jal get_totals
+		lw $t1, 8($sp) #t1 hold the computer total
+		lw $ra, 4($sp)
+		addiu $sp, $sp, 16
+		#display player total
+		li $v0, 4
+		la $a0, player_total_output
+		syscall
+		
+		li $v0, 1
+		move $a0, $t1
+		syscall
+		
+		#get totals for computer
+		addiu $sp, $sp, -16
+		sw $s2, 0($sp)
+		sw $ra, 4($sp)
+		jal get_totals
+		lw $t2, 8($sp) #t2 hold the computer total
+		lw $ra, 4($sp)
+		addiu $sp, $sp, 16
+		#display computer total
+		li $v0, 4
+		la $a0, computer_total_output
+		syscall	
+		li $v0, 1
+		move $a0, $t2
+		syscall
+		
 
-		#CHECK VALUES
+		#display totals first then,
+			#if player value = 21 && comp value == 21 tie
+		#ask user if they want to hit or stand
+		# depending on their input either
+		
+		#hit, add new value to array, get total, then check computer value
+			#if comp value <16 hit
+			#if comp value > = 16 stand
+		#stand then check computer value
+			#if comp value <16 hit
+			#if comp value > = 16 stand
+			
+		
+			
+		
 		
 
 
