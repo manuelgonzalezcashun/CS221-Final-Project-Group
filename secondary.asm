@@ -45,6 +45,17 @@ display_array:
 
 .globl get_totals
 get_totals: 
+	lw $t1, 0($sp) #address of array of either player of computer
+	li $t3, 0      #$t3 will hold the total value of the array
+	loop4:
+		lw $t2, 0($t1)
+		beqz $t2, done4
+		add $t3, $t3, $t2
+		addi $t1, $t1 ,4
+		b loop4
+		
+	done4:
+	sw $t3, 8($sp)
     jr $ra
 
 
