@@ -5,13 +5,10 @@
 .data
 introduction_text: .asciiz "Welcome to 21, the modified version of Black Jack!\n{Please read rules.txt for game rules!}\n"
 player_choice: .asciiz "\nEnter a choice:\nEnter (1) to continue\nEnter (2) to exit\n----> "
-lower_bound: .word 1
-upper_bound: .word 11 #maximum value of card
 player_array: .space 100 #space to put user card/values
 computer_array: .space 100 #space to put the computers card/values
+continue_prompt: .asciiz "\nEnter a choice:\nEnter (1) to hit\nEnter (2) to stand\n----> "
 
-player_rolled: .asciiz "\nPlayer drew: "
-computer_rolled: .asciiz "\nComputer drew: "
 player_card_read: .asciiz "\nThe player's values: "
 computer_card_read: .asciiz "\nThe computer's values: "
 
@@ -19,6 +16,10 @@ player_total_output: .asciiz "\nPlayers total: "
 computer_total_output: .asciiz "\nComputers total: "
 
 exit_output: .asciiz "\nThanks for playing our game!"
+
+player_won: .asciiz "\nCongrats, You Won!!"
+computer_won: .asciiz "\nSorry, looks like you lost!"
+tie_prompt: .asciiz "\nLooks like no one wins!"
 
 
 .text 
@@ -46,160 +47,120 @@ main:
 	before_MAIN_LOOP:
 	la $s1, player_array    #$s1 will be a global variable holding the address of the player_array
 	la $s2, computer_array  #$s2 will be a global variable holding the address of the computer_array
-	li $a3, 0 				#will hold the loop counter for specific parts of MAIN_LOOP & other parts
+	li $t5, 0				#players totals global variable
+	li $t6, 0 				#computers totals global variable
+	
 	#MAIN GAME LOOP
 	MAIN_LOOP:
-		#CREATE PLAYER HAND
-		la $t1, lower_bound #load the address of lower_bound
-		lw $t1, ($t1)	    #load the value at address lower_bound
-		la $t2, upper_bound #load the address of the upper_bound
-		lw $t2, ($t2)	    #load the value at address upper_bound
-		#call random int
-		addiu $sp, $sp, -16
-		sw $t1, 0($sp)
-		sw $t2, 4($sp)
-		sw $ra, 8($sp)
-		jal random_int
-		lw $t1, 12($sp) # $t1 hold the newly generated random int
-		lw $ra, 8($sp)
-		addiu $sp, $sp, 16
-
-		#DISPLAY CARD JUST DRAWN
-		li $v0, 4
-		la $a0, player_rolled
-		syscall
-		li $v0, 1
-		move $a0, $t1
-		syscall
-
-		#STORE PLAYER HAND TO PLAYER ARRAY
-		#call append array
-		addiu $sp, $sp, -16
-		sw $t1, 0($sp) #value to store
-		sw $s1, 4($sp) #player array
-		sw $ra, 8($sp)
-		jal append_to_array
-		lw $ra, 8($sp)
-		addiu $sp, $sp, 16
-
-		#CREATE COMPUTER HAND
-		#call rand int
-		la $t1, lower_bound #load the address of lower_bound
-		lw $t1, ($t1)	    #load the value at address lower_bound
-		la $t2, upper_bound #load the address of the upper_bound
-		lw $t2, ($t2)	    #load the value at address upper_bound
-		#call random int
-		addiu $sp, $sp, -16
-		sw $t1, 0($sp)
-		sw $t2, 4($sp)
-		sw $ra, 8($sp)
-		jal random_int
-		lw $t1, 12($sp) # $t1 hold the newly generated random int
-		lw $ra, 8($sp)
-		addiu $sp, $sp, 16
-
-		#DISPLAY CARD JUST DRAWN
-		li $v0, 4
-		la $a0, computer_rolled
-		syscall
-		li $v0, 1
-		move $a0, $t1
-		syscall
-		
-		#STORE PLAYER HAND TO PLAYER ARRAY
-		#call append array
-		addiu $sp, $sp, -16
-		sw $t1, 0($sp) #value to store
-		sw $s2, 4($sp) #player array
-		sw $ra, 8($sp)
-		jal append_to_array
-		lw $ra, 8($sp)
-		addiu $sp, $sp, 16
-		
-		addi $a3, $a3, 1
-		blt $a3, 2, MAIN_LOOP #MAIN_LOOP WILL HAPPEN AT LEAST 2x
-		
-		# AT THIS POINT EACH PLAYER HAS ONE CARD, DRAW AGAIN AND THEN CHECK TOTALS
-		#DISPLAY THE ENTIRE ARRAY (player)
-		li $v0, 4
-		la $a0, player_card_read
-		syscall
-		#call displayarray
-		addiu $sp, $sp, -16
-		sw $s1, 0($sp)
-		sw $ra, 4($sp)
-		jal display_array
-		lw $ra, 4($sp)
-		addiu $sp, $sp, 16
-		
-		#DISPLAY THE ENTIRE ARRAY (computer)
-		li $v0, 4
-		la $a0, computer_card_read
-		syscall
-		#call displayarray
-		addiu $sp, $sp, -16
-		sw $s2, 0($sp)
-		sw $ra, 4($sp)
-		jal display_array
-		lw $ra, 4($sp)
-		addiu $sp, $sp, 16
-		
-		#get totals for player
-		addiu $sp, $sp, -16
-		sw $s1, 0($sp)
-		sw $ra, 4($sp)
-		jal get_totals
-		lw $t1, 8($sp) #t1 hold the computer total
-		lw $ra, 4($sp)
-		addiu $sp, $sp, 16
-		#display player total
-		li $v0, 4
-		la $a0, player_total_output
-		syscall
-		
-		li $v0, 1
-		move $a0, $t1
-		syscall
-		
-		#get totals for computer
-		addiu $sp, $sp, -16
-		sw $s2, 0($sp)
-		sw $ra, 4($sp)
-		jal get_totals
-		lw $t2, 8($sp) #t2 hold the computer total
-		lw $ra, 4($sp)
-		addiu $sp, $sp, 16
-		#display computer total
-		li $v0, 4
-		la $a0, computer_total_output
-		syscall	
-		li $v0, 1
-		move $a0, $t2
-		syscall
-		
-
-		#display totals first then,
-			#if player value = 21 && comp value == 21 tie
-		#ask user if they want to hit or stand
-		# depending on their input either
-		
-		#hit, add new value to array, get total, then check computer value
-			#if comp value <16 hit
-			#if comp value > = 16 stand
-		#stand then check computer value
-			#if comp value <16 hit
-			#if comp value > = 16 stand
-			
-		
-			
-		
-		
-
-
-		#CHECK GAME_STATE {WIN/LOSS}
+		part_1:
+			#create player hand, display the array, return the totals += to global variables
+				la $t1, player_card_read
+				la $t2, player_total_output
+				addiu $sp, $sp, -20
+				sw $s1, 0($sp)      #address of player array
+				sw $t1, 4($sp) 		#address of player_card_read
+				sw $t2, 8($sp)		#address of the player_total_output
+				sw $ra, 12($sp)		#save the $ra
+				jal big_chungus
+				lw $t1, 16($sp)
+				lw $ra, 12($sp)
+				addiu $sp, $sp, 20
+				move $t5, $t1       #save the total to the global register
+				
+		part_2:
+			#create computer hand, display the array, return the totals += to global variables
+				la $t1, computer_card_read
+				la $t2, computer_total_output
+				addiu $sp, $sp, -20
+				sw $s2, 0($sp)      #address of computer array
+				sw $t1, 4($sp) 		#address of computer_card_read
+				sw $t2, 8($sp)		#address of the computer_total_output
+				sw $ra, 12($sp)		#save the $ra
+				jal big_chungus
+				lw $t1, 16($sp)
+				lw $ra, 12($sp)
+				addiu $sp, $sp, 20
+				move $t6, $t1       #save the total to the global register
 
 
 
+		get_user_choice:
+			li $v0, 4
+			la $a0, continue_prompt
+			syscall
+			li $v0, 5
+			syscall 
+
+			beq $v0, 1, user_choice_1
+			beq $v0, 2, user_choice_2
+			bgt $v0, 1, EXIT_GAME
+			blt $v0, 2, EXIT_GAME
+			#ask the user (stand or hit?)
+			user_choice_1: #hit
+				la $t1, player_card_read
+				la $t2, player_total_output
+				addiu $sp, $sp, -20
+				sw $s1, 0($sp)      #address of player array
+				sw $t1, 4($sp) 		#address of player_card_read
+				sw $t2, 8($sp)		#address of the player_total_output
+				sw $ra, 12($sp)		#save the $ra
+				jal big_chungus
+				lw $t1, 16($sp)
+				lw $ra, 12($sp)
+				addiu $sp, $sp, 20
+				move $t5, $t1       #save the total to the global register
+
+				#check for bust
+				bgt $t5, 21, computer_wins			#player got greedy, bust
+				beq $t5, 21, player_wins			#player got lucky
+				
+				b get_user_choice
+
+
+			user_choice_2: #stand (hit only when < 16)
+				bge $t6, 16, compare_computer_player
+				la $t1, computer_card_read
+				la $t2, computer_total_output
+				addiu $sp, $sp, -20
+				sw $s2, 0($sp)      #address of computer array
+				sw $t1, 4($sp) 		#address of computer_card_read
+				sw $t2, 8($sp)		#address of the computer_total_output
+				sw $ra, 12($sp)		#save the $ra
+				jal big_chungus
+				lw $t1, 16($sp)
+				lw $ra, 12($sp)
+				addiu $sp, $sp, 20
+				move $t6, $t1       #save the total to the global register
+
+				bgt $t6, 21, player_wins			#computer got greedy, bust
+				beq $t6, 21, computer_wins			#computer got lucky
+
+				b user_choice_2
+
+			compare_computer_player:
+			#check if computer wins?
+			bgt $t6, $t5, computer_wins
+			bgt $t5, $t6, player_wins
+
+			#TIE, by default
+			li $v0, 4
+			la $a0, tie_prompt
+			syscall
+			b EXIT_GAME
+
+			player_wins:
+			li $v0, 4
+			la $a0, player_won
+			syscall
+			b EXIT_GAME
+
+			computer_wins:
+			li $v0, 4
+			la $a0, computer_won
+			syscall
+			b EXIT_GAME
+
+		
 	EXIT_GAME:
 	li $v0, 4
 	la $a0, exit_output
