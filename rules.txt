@@ -5,11 +5,11 @@ GAME RULES
     --- Player continues to draw until they reach 21, choose to fold (stop drawing cards), or bust (exceed 21)
     --- 11 acts as the Ace, if the Player busts but has an 11 in their hand it becomes a 1 and the player can continue drawing or fold
     --- If the Player draws an 11 (Ace) and 10 from their first two values they will have reached 21 and automatically fold
-    --- If the Player reaches 21 or folds the Dealer will then draw 2 values between 2-11 and continue to draw until they reach 21, fold, or bust
+    --- If the Player folds the Dealer will then draw 2 values between 2-11 and continue to draw until they reach 21, fold, or bust
 
     Player Win Cases:
-	  - The Player folds or reaches 21 while the Dealer busts
-	  - The Player folds with a score of, or closer to, 21 than the Dealer
+	  - The Player reaches 21
+	  - The Player folds with a score closer to 21 than the Dealer
 	  
     Dealer Win Cases:
 	  - The Player busts
