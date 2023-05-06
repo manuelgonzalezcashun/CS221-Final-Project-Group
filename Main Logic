@@ -1,16 +1,14 @@
 Main Logic
 
-Li $t7, 0  		# t7 will house our subtraction for ace values if we bust
-
 Initial_Draw:
 
 	Player draws a value
 	Player draws a value
 
-	Branch to BlackJack if total equals 21
-
 	Call/Display the Player’s values in array
 	Call/Display the Player’s total
+	
+	Branch to Dealer_Draw if total equals 21
 
 	Ask the Player to Draw or Fold
 	Branch to Dealer_Draw if User Input = Fold
@@ -18,54 +16,25 @@ Initial_Draw:
 Continue_Drawing:
 
 	Player draws a value
+	Call/Display the Player’s values in array
+	Call/Display the Player’s total
 	
 	Check_Bust:
 		
-		Call the Player’s total 
-		Subtract $t7 from the Player’s total
-		Branch to BlackJack if total equals 21
-		Branch to Check_Ace if total is greater than 21
-
-		Call/Display the Player’s values in array
-		Display the Player’s total
+		Branch to Dealer_Draw if total equals 21
+		Branch to Bust if total is greater than 21
 
 		Ask the Player to Draw or Fold
-		Branch to Dealer_Draw if User Inputer = Fold
+		Branch to Dealer_Draw if User Input = Fold
 		Branch to Continue_Drawing
-		
-	
-	Check_Ace: 				# Loop through every array element to check for an element = to 11
-
-		Load next element in array	
-		Branch to Ace_Bust if element equals 11
-		Branch to Bust if end of array is reached
-
-		Move over to next element in array
-		Branch to Check_Ace
-
-		Ace_Bust: 
-
-			Add 10 to $t7
-			Branch to Check_Bust
 
 	Bust: 
-
-		Call/Display the Player’s values in array
-		Call/Display the Player’s total 
+	
 		Display a Bust Prompt 			# Bust prompt can be anything like “You busted, Dealer wins”
 		End Program
 
-
-	BlackJack:
-		
-		Call/Display the Player’s values in array
-		Call/Display the Player’s total 
-		Branch to Dealer_Draw
-
 Dealer_Draw:
 	
-	Li $t7, 0  			# resets our ace value register for dealer
-
 	Dealer draws a value
 	Dealer draws a value
 
@@ -77,38 +46,17 @@ Dealer_Draw:
 Dealer_Continue:
 		
 	Dealer draws a value
-
+	Call/Display the Dealer total
+	Call/Display the Dealer’s values in array
+		
 	Dealer_Check_Bust:
-
-		Call the Dealer total
-		Call the Dealer’s values in array
-		Subtract $t7 from Dealer total
-		Branch to Dealer_Ace_Check if total is greater than 21
-
-		Display Dealer values in array
-		Display the Dealer’s total
-
+	
+		Branch to Dealer_Bust if total is greater than 21
 		Branch to Compare_Hands if total is greater than or equal to 16
 		Branch to Dealer_Continue
 
-	Dealer_Ace_Check:
-		
-		Load next element in array	
-		Branch to Dealer_Ace_Bust if element equals 11
-		Branch to Dealer_Bust if end of array is reached
-
-		Move over to next element in array
-		Branch to Dealer_Ace_Check
-
-		Dealer_Ace_Bust:
-
-			Add 10 to $t7
-			Branch to Dealer_Check_Bust
-
 	Dealer_Bust:
 		
-		Call/Display Dealer values in array
-		Call/Display Dealer’s total
 		Display Player Win Prompt			# Prompt can be anything like, “Player Wins”
 		End Program
 
