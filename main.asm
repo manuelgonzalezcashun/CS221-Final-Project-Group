@@ -1,7 +1,6 @@
 #Ellmaer, Alex, Nik, Manny
 #Due; {5/8}
 
-
 .data
 introduction_text: .asciiz "Welcome to 21, the modified version of Black Jack!\n{Please read rules.txt for game rules!}\n"
 player_choice: .asciiz "\nEnter a choice:\nEnter (1) to continue\nEnter (2) to exit\n----> "
@@ -20,6 +19,8 @@ exit_output: .asciiz "\nThanks for playing our game!"
 player_won: .asciiz "\nCongrats, You Won!!"
 computer_won: .asciiz "\nSorry, looks like you lost!"
 tie_prompt: .asciiz "\nLooks like no one wins!"
+
+error: .asciiz "Please input a valid number"
 
 
 .text 
@@ -40,8 +41,8 @@ main:
 	#check beginning input of the user
 	beq $t0, 1, before_MAIN_LOOP
 	beq $t0, 2, EXIT_GAME
-	bgt $t0, 1, EXIT_GAME
-	blt $t0, 2, EXIT_GAME
+	bgt $t0, 1, INVALID_NUMBER_p1
+	blt $t0, 2, INVALID_NUMBER_p1
 
 
 	before_MAIN_LOOP:
@@ -93,8 +94,8 @@ main:
 
 			beq $v0, 1, user_choice_1
 			beq $v0, 2, user_choice_2
-			bgt $v0, 1, EXIT_GAME
-			blt $v0, 2, EXIT_GAME
+			bgt $v0, 1, INVALID_NUMBER_p2
+			blt $v0, 2, INVALID_NUMBER_p2
 			#ask the user (stand or hit?)
 			user_choice_1: #hit
 				la $t1, player_card_read
@@ -159,6 +160,18 @@ main:
 			la $a0, computer_won
 			syscall
 			b EXIT_GAME
+			
+	INVALID_NUMBER_p1:
+	li $v0, 4
+	la $a0, error
+	syscall
+	b main_2
+	
+	INVALID_NUMBER_p2:
+	li $v0, 4
+	la $a0, error
+	syscall
+	b get_user_choice
 
 		
 	EXIT_GAME:
@@ -170,4 +183,40 @@ main:
     syscall
 
 
-#Eventually add a way to check for invalid inputs and print out a generic output, making the user_restart the entire program #
+# Error Catcher if there is an invalid input (Input is anything other than 1 or 2)
+
+.kdata
+register: .space 8
+bad_input: .asciiz "You must input a valid number"
+
+.ktext 0x80000180
+move $k1, $at
+la $k0, register
+sw $a0, 0($k0)
+sw $v0, 4($k0)
+
+mfc0 $k0, $13
+srl $k0, $k0, 2
+andi $k0, $k0, 15
+
+li $v0, 4
+la $a0, bad_input
+syscall
+
+# Instead of moving forward in the code, shift back to re-load the prompt
+mfc0 $k0, $14
+addi $k0, $k0, -20
+mtc0 $k0, $14
+
+mtc0 $zero, $13
+
+mfc0 $k0, $12
+andi $k0, $k0, 0xFFFD
+ori $k0, $k0, 1
+mtc0 $k0, $12
+
+la $k0, register
+lw $a0, 0($k0)
+lw $v0, 4($k0)
+move $at, $k1
+eret
