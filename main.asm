@@ -62,7 +62,7 @@ main:
 				sw $t1, 4($sp) 		#address of player_card_read
 				sw $t2, 8($sp)		#address of the player_total_output
 				sw $ra, 12($sp)		#save the $ra
-				jal big_chungus
+				jal update_hand
 				lw $t1, 16($sp)
 				lw $ra, 12($sp)
 				addiu $sp, $sp, 20
@@ -77,7 +77,7 @@ main:
 				sw $t1, 4($sp) 		#address of computer_card_read
 				sw $t2, 8($sp)		#address of the computer_total_output
 				sw $ra, 12($sp)		#save the $ra
-				jal big_chungus
+				jal update_hand
 				lw $t1, 16($sp)
 				lw $ra, 12($sp)
 				addiu $sp, $sp, 20
@@ -104,7 +104,7 @@ main:
 				sw $t1, 4($sp) 		#address of player_card_read
 				sw $t2, 8($sp)		#address of the player_total_output
 				sw $ra, 12($sp)		#save the $ra
-				jal big_chungus
+				jal update_hand
 				lw $t1, 16($sp)
 				lw $ra, 12($sp)
 				addiu $sp, $sp, 20
@@ -135,7 +135,7 @@ main:
 				sw $t1, 4($sp) 		#address of computer_card_read
 				sw $t2, 8($sp)		#address of the computer_total_output
 				sw $ra, 12($sp)		#save the $ra
-				jal big_chungus
+				jal update_hand
 				lw $t1, 16($sp)
 				lw $ra, 12($sp)
 				addiu $sp, $sp, 20
