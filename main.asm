@@ -84,7 +84,6 @@ main:
 				move $t6, $t1       #save the total to the global register
 
 
-
 		get_user_choice:
 			li $v0, 4
 			la $a0, continue_prompt
@@ -111,6 +110,15 @@ main:
 				addiu $sp, $sp, 20
 				move $t5, $t1       #save the total to the global register
 
+				#JUST DISPLAY COMPUTER TOTAL
+				li $v0, 4
+				la $a0, computer_total_output
+				syscall
+				li $v0, 1
+				move $a0, $t6
+				syscall
+				
+
 				#check for bust
 				bgt $t5, 21, computer_wins			#player got greedy, bust
 				beq $t5, 21, player_wins			#player got lucky
@@ -132,6 +140,16 @@ main:
 				lw $ra, 12($sp)
 				addiu $sp, $sp, 20
 				move $t6, $t1       #save the total to the global register
+
+				#JUST DISPLAY PLAYER TOTAL
+				li $v0, 4
+				la $a0, player_total_output
+				syscall
+				li $v0, 1
+				move $a0, $t5
+				syscall
+				
+
 
 				bgt $t6, 21, player_wins			#computer got greedy, bust
 				beq $t6, 21, computer_wins			#computer got lucky
