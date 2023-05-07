@@ -127,10 +127,3 @@ random_int: #GENERATE RANDOM VALUE between 1 - 11
     addi $a0, $a0, 1
     sw $a0, 4($sp)#where the return value will be stored in
     jr $ra
-
-
-.globl display_total_and_array
-display_total_and_array:
-
-	jr $ra
-
