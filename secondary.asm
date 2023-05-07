@@ -4,8 +4,8 @@ delimiter: .asciiz " " #delimter is just a space
 
 
 .text
-.globl big_chungus
-big_chungus: 
+.globl update_hand
+update_hand: 
     lw $t9, 0($sp) #load the memory address from the stack pointer
     lw $t8, 4($sp) #The values (string)
     lw $t7, 8($sp) #The totals (string)
