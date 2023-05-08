@@ -208,15 +208,18 @@ register: .space 8
 bad_input: .asciiz "You must input a valid number"
 
 .ktext 0x80000180
+# Saving registers for the address, and our $a0 and $v0 values
 move $k1, $at
 la $k0, register
 sw $a0, 0($k0)
 sw $v0, 4($k0)
 
+# Get the cause of the error
 mfc0 $k0, $13
 srl $k0, $k0, 2
 andi $k0, $k0, 15
 
+# Output prompt that shows error. (This case, the error is the same given an invalid input)
 li $v0, 4
 la $a0, bad_input
 syscall
@@ -226,13 +229,16 @@ mfc0 $k0, $14
 addi $k0, $k0, -20
 mtc0 $k0, $14
 
+# Cause register is reset
 mtc0 $zero, $13
 
+# Clear status register by retrieving, doing andi with 0xFFFD and setting it back in place
 mfc0 $k0, $12
 andi $k0, $k0, 0xFFFD
 ori $k0, $k0, 1
 mtc0 $k0, $12
 
+# Load back our register, along with $a0 and $v0. After, move back with our "new" return address
 la $k0, register
 lw $a0, 0($k0)
 lw $v0, 4($k0)
