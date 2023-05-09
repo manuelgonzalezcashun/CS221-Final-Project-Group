@@ -1,5 +1,3 @@
-
-
 GAME RULES
     --- Player draws a value between 1-11, then Computer draws a value between 1-11
     --- Player continues to draw until they reach 21, choose to fold (stop drawing cards), or bust (exceed 21)
@@ -16,5 +14,10 @@ GAME RULES
 	  - Neither Player nor Dealer bust but the Dealer has a score of, or closer to, 21 than the Player
 	  
     Draw Cases:
-    	  - Both Player and Dealer fold with a hand that reaches the same value
+    	- Both Player and Dealer fold with a hand that reaches the same value
+
+    Vocabulary:
+        - HIT: add a random value from 1 - 11 (inclusive) to the player current total
+        - STAND: keep totals and allow computer to HIT/STAND and compare values at the end
+
 	  
