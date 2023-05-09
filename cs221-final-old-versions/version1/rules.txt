@@ -1,0 +1,15 @@
+
+
+GAME RULES
+    ---
+    ---
+    ---
+    ---
+    ---
+
+
+    WIN STATES:
+        ---
+
+    LOSS STATES:
+        ---
