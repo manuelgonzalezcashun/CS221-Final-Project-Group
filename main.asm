@@ -2,25 +2,25 @@
 #Due; {5/8}
 
 .data
-introduction_text: .asciiz "Welcome to 21, the modified version of Black Jack!\n{Please read rules.txt for game rules!}\n"
-player_choice: .asciiz "\nEnter a choice:\nEnter (1) to continue\nEnter (2) to exit\n----> "
+introduction_text: .asciiz "Welcome to 21, the modified version of Black Jack!\n\n{Please read [rules.txt] for game rules!}\n"
+player_choice: .asciiz "\nEnter a choice:\nEnter (1) to CONTINUE\nEnter (2) to EXIT\n----> "
 player_array: .space 100 #space to put user card/values
 computer_array: .space 100 #space to put the computers card/values
-continue_prompt: .asciiz "\nEnter a choice:\nEnter (1) to hit\nEnter (2) to stand\n----> "
+continue_prompt: .asciiz "\nEnter a choice:\nEnter (1) to HIT\nEnter (2) to STAND\n----> "
 
 player_card_read: .asciiz "\nThe player's values: "
 computer_card_read: .asciiz "\nThe computer's values: "
 
-player_total_output: .asciiz "\nPlayers total: "
-computer_total_output: .asciiz "\nComputers total: "
+player_total_output: .asciiz "\nPlayers' current total: "
+computer_total_output: .asciiz "\nComputer's current total: "
 
 exit_output: .asciiz "\nThanks for playing our game!"
 
-player_won: .asciiz "\nCongrats, You Won!!"
-computer_won: .asciiz "\nSorry, looks like you lost!"
-tie_prompt: .asciiz "\nLooks like no one wins!"
+player_won: .asciiz "\nCongradulations!!, You Won!!"
+computer_won: .asciiz "\nSorry, looks like you lost! Better luck next time!"
+tie_prompt: .asciiz "\nLooks like no one wins! This round is a Tie!"
 
-error: .asciiz "Please input a valid number"
+error: .asciiz "Please input a valid number!"
 
 
 .text 
@@ -43,7 +43,6 @@ main: # Where everything is running
 	beq $t0, 2, EXIT_GAME # User doesn't want to play game
 	bgt $t0, 1, INVALID_NUMBER_p1 #User entered invalid choice
 	blt $t0, 2, INVALID_NUMBER_p1 #User entered invalid choice
-
 
 	before_MAIN_LOOP:
 	la $s1, player_array    #$s1 will be a global variable holding the address of the player_array
@@ -82,7 +81,6 @@ main: # Where everything is running
 				lw $ra, 12($sp)     #Load the return address
 				addiu $sp, $sp, 20  #Deallocates space on the stack
 				move $t6, $t1       #save the total to the global register
-
 
 		get_user_choice:
 			li $v0, 4 # print continue_propmt string
@@ -125,7 +123,6 @@ main: # Where everything is running
 				
 				b get_user_choice
 
-
 			user_choice_2: #stand (hit only when < 16)
 				bge $t6, 16, compare_computer_player
 				la $t1, computer_card_read
@@ -149,7 +146,6 @@ main: # Where everything is running
 				move $a0, $t5 #Saves player total output to player total global variable
 				syscall
 				
-
 
 				bgt $t6, 21, player_wins			#computer got greedy, bust
 				beq $t6, 21, computer_wins			#computer got lucky
