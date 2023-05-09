@@ -1,5 +1,5 @@
 # CS221-Final-Project-Group
-CS221 Final Project Group
+CS221 Final Project Group Report
 
 This was done with MIPS, using the MARS VM. 
 CS221
