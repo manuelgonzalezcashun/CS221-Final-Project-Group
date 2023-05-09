@@ -12,7 +12,7 @@ update_hand:
 
     # call the random_int()
         addiu $sp, $sp, -12     # allocate stack space
-        sw $ra, 0($sp)          # return address stored
+        sw $ra, 0($sp)          # return address saved bc we are doing a call within a call, so very important to save
         jal random_int
         lw $t1, 4($sp)          # random value restored
         lw $ra, 0($sp)          # return address returned
@@ -22,11 +22,11 @@ update_hand:
         addiu $sp, $sp, -12
         sw $t1, 0($sp)          # random value passed
         sw $t9, 4($sp)          # memory address passed
-        sw $ra, 8($sp)
+        sw $ra, 8($sp)          # again, function -> function, must save $ra
         jal append_to_array
-        lw $ra, 8($sp)
+        lw $ra, 8($sp)          # retore the $ra
         addiu $sp, $sp, 12
-        lw $t9, 0($sp)          # reset the memory address
+        lw $t9, 0($sp)          # reset the memory address, (might not be needed but just in case)
     
     # call the display_array()
         addiu $sp, $sp, -12
@@ -80,13 +80,13 @@ display_array:
     syscall
 
     loop1:
-        lw $t2, 0($t1)
-        beqz $t2, done             # branch to done if every element in array is printed
-        li $v0, 1
-        move $a0, $t2
+        lw $t2, 0($t1)             # at begining of array passed, load the value
+        beqz $t2, done             # if the value just loaded is 0, then we reached the end
+        li $v0, 1                  # this works bc we only deal with values 1-11, and the array has at least one vaulue in the array while displaying
+        move $a0, $t2              # print out the value we just found in the array 
         syscall
-        li $v0, 4
-        la $a0, delimiter
+        li $v0, 4                  # print out the delimiter
+        la $a0, delimiter           
         syscall
         addi $t1, $t1, 4           # loop counter updated
         b loop1
@@ -102,7 +102,7 @@ get_totals:
     lw $t4, 4($sp)                 # prints "x totals: "
     li $t3, 0                      # $t3 will hold the total value of the array
     li $v0, 4
-    move $a0, $t4
+    move $a0, $t4                  # syscall to print "x totals: "
     syscall
     loop4:
         lw $t2, 0($t1)             # loads next element in array
@@ -122,8 +122,8 @@ get_totals:
 .globl random_int
 random_int:                        # GENERATE RANDOM VALUE between 1 - 11
     li $v0, 42                     # random number call        
-    li $a1, 11                     # upper bound
+    li $a1, 11                     # upper bound = 11
     syscall
-    addi $a0, $a0, 1               # lower bound
+    addi $a0, $a0, 1               # lower bound = 1
     sw $a0, 4($sp)                 # where the return value will be stored in
     jr $ra
